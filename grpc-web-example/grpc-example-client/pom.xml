@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>grpc-example-client</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <parent>
+        <groupId>com.ksfintech</groupId>
+        <artifactId>grpc-web-example</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <properties>
+        <orientsec.grpc.version>1.2.1</orientsec.grpc.version>
+        <protoc.version>3.5.1-1</protoc.version>
+        <protoc-gen-grpc-java.version>1.17.1</protoc-gen-grpc-java.version>
+        <spring-boot.version>2.0.1.RELEASE</spring-boot.version>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.ksfintech</groupId>
+            <artifactId>grpc-web-spring-boot-starter</artifactId>
+            <version>1.0.0-RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ksfintech</groupId>
+            <artifactId>grpc-example-api</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.lognet</groupId>
+            <artifactId>grpc-spring-boot-starter</artifactId>
+            <version>3.0.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.grpc</groupId>
+                    <artifactId>grpc-netty</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>io.grpc</groupId>
+                    <artifactId>grpc-services</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.orientsec.grpc</groupId>
+            <artifactId>orientsec-grpc-services</artifactId>
+            <version>${orientsec.grpc.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.orientsec.grpc</groupId>
+            <artifactId>orientsec-grpc-netty-shaded</artifactId>
+            <version>${orientsec.grpc.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.orientsec.grpc</groupId>
+            <artifactId>orientsec-grpc-protobuf</artifactId>
+            <version>${orientsec.grpc.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.orientsec.grpc</groupId>
+            <artifactId>orientsec-grpc-stub</artifactId>
+            <version>${orientsec.grpc.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.3.1.RELEASE</version>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

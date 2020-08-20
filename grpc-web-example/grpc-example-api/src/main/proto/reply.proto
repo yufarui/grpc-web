@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package proto.reply;
+
+option java_multiple_files = true;
+option java_package = "com.ksfintech.proto.reply";
+option java_outer_classname = "ReplyProto";
+
+message HelloReply {
+  string message = 1;
+}
