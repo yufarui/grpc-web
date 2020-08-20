@@ -43,7 +43,6 @@ public class CheckGrpcControllerBean implements CommandLineRunner {
 
         Method[] declaredMethods = grpcClass.getDeclaredMethods();
 
-
         for (int i = 0; i < declaredMethods.length; i++) {
             Method method = declaredMethods[i];
             String methodName = method.getName();
