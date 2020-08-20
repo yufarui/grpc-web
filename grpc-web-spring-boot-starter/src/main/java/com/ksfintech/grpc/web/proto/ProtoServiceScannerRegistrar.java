@@ -87,17 +87,13 @@ public class ProtoServiceScannerRegistrar implements ImportBeanDefinitionRegistr
             return;
         }
 
-        Set<String> keySet = packageProtoService.keySet();
+        log.info("当前目录{},服务列表[{}]", packageName, String.join(",", packageProtoService.keySet()));
 
-        log.info("当前目录{},服务列表[{}]", packageName, String.join(",", keySet));
-
-        for (String key : keySet) {
-
+        packageProtoService.forEach((key, value) -> {
             if (protoServiceMap.get(key) != null) {
                 throw new GrpcException("不允许存在重复Grpc服务名称[{}]", key);
             }
-
-            protoServiceMap.put(key, packageProtoService.get(key));
-        }
+            protoServiceMap.put(key, value);
+        });
     }
 }

@@ -26,7 +26,7 @@ public class ProtoServiceUtil {
 
     public static Map<String, ProtoService> findClasses(String packageName, File dir) {
 
-        Map<String, ProtoService> protoServiceMap = new HashMap<>();
+        Map<String, ProtoService> protoServiceMap = new HashMap<>(16);
 
         if (!dir.exists() || !dir.isDirectory()) {
             log.warn("[{}]包中不存在类", dir.getName());
