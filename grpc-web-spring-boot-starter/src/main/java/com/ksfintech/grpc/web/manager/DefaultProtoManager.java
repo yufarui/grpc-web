@@ -43,14 +43,14 @@ public class DefaultProtoManager implements ProtoServiceManager {
         Collection<ProtoService> values = protoServiceMap.values();
         for (ProtoService protoService : values) {
 
-            Class grpcClass = protoService.getProtoClass();
+            Class<?> grpcClass = protoService.getProtoClass();
             ManagedChannel channel = create(protoService);
 
             Map<ProtoEnum, ProtoStub> protoStubMap = protoService.getProtoStubMap();
             for (ProtoStub protoStub : protoStubMap.values()) {
                 Method newBlockingStub = grpcClass.getMethod(ProtoEnum.chooseStubString(protoStub.getProtoEnum()),
                         Channel.class);
-                AbstractStub stub = (AbstractStub) newBlockingStub.invoke(new Object(), channel);
+                AbstractStub<?> stub = (AbstractStub<?>) newBlockingStub.invoke(new Object(), channel);
                 protoStub.setAbstractStub(stub);
             }
 
