@@ -1,6 +1,6 @@
 package com.orientsec.grpc.config;
 
-import com.ksfintech.grpc.web.proto.ProtoServiceScanner;
+import com.ksfintech.grpc.controller.proto.ProtoServiceScanner;
 import org.springframework.context.annotation.Configuration;
 
 /**

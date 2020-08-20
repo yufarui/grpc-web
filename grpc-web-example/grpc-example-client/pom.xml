@@ -24,7 +24,7 @@
 
         <dependency>
             <groupId>com.ksfintech</groupId>
-            <artifactId>grpc-web-spring-boot-starter</artifactId>
+            <artifactId>grpc-controller-spring-boot-starter</artifactId>
             <version>1.0.0-RELEASE</version>
         </dependency>
 

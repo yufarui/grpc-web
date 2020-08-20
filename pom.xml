@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>grpc-web-spring-boot-starter</module>
+        <module>grpc-controller-spring-boot-starter</module>
         <module>grpc-web-example</module>
         <module>grpc-dependency</module>
     </modules>

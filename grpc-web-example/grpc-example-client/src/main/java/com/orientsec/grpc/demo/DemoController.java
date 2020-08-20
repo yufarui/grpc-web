@@ -1,8 +1,8 @@
 package com.orientsec.grpc.demo;
 
-import com.ksfintech.grpc.web.grpcmapping.GrpcController;
-import com.ksfintech.grpc.web.grpcmapping.GrpcMapping;
-import com.ksfintech.grpc.web.proto.ProtoEnum;
+import com.ksfintech.grpc.controller.grpcmapping.GrpcController;
+import com.ksfintech.grpc.controller.grpcmapping.GrpcMapping;
+import com.ksfintech.grpc.controller.proto.ProtoEnum;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
