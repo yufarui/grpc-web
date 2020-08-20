@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * 将GrpcController对应类交由GrpcControllerFactoryBean控制
+ *
  * @date: 2020/8/4 15:31
  * @author: farui.yu
  */

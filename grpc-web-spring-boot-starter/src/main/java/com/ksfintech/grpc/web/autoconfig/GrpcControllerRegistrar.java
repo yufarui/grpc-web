@@ -16,6 +16,8 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 
 /**
+ * 扫描所有携带@GrpcController注解的类
+ *
  * @date: 2020/8/4 15:30
  * @author: farui.yu
  */

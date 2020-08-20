@@ -24,6 +24,9 @@ import java.lang.reflect.Parameter;
 import java.util.List;
 
 /**
+ * 检查代码.检查 GrpcController 是否和原proto文件保持一致
+ * 注意CommandLineRunner的启动顺序
+ *
  * @date: 2020/8/17 16:26
  * @author: farui.yu
  */

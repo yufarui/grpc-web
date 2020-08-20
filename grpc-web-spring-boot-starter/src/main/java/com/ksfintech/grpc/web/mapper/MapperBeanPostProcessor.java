@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 映射转换处理,只对 protobuf相关的转换进行处理
+ *
  * @author farui.yu
  */
 public class MapperBeanPostProcessor implements BeanPostProcessor {
