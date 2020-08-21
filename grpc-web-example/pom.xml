@@ -15,6 +15,7 @@
     <modules>
         <module>grpc-example-api</module>
         <module>grpc-example-client</module>
+        <module>grpc-example-server</module>
     </modules>
 
 </project>

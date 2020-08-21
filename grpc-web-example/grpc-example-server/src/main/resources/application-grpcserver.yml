@@ -1,0 +1,9 @@
+grpc:
+  proto:
+    httpAddress: localhost:9920
+    service:
+      myService:
+        httpAddress: localhost:9920
+        methodMap:
+          sayHello:
+            urlPath: /test

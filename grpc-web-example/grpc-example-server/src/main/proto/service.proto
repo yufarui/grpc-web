@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package proto.service;
+
+import "option.proto";
+import "request.proto";
+import "reply.proto";
+
+option java_multiple_files = true;
+option java_package = "com.ksfintech.proto.service";
+option java_outer_classname = "ServiceProto";
+option (proto.option.http_address) = "127.0.0.1:9920";
+
+service MyService {
+
+  rpc SayHello (proto.request.HelloRequest) returns (proto.reply.HelloReply) {
+    option (proto.option.url_path) = "/test";
+  }
+
+//  rpc Test1 (stream proto.request.HelloRequest) returns (proto.reply.HelloReply) {
+//  }
+//
+//  rpc Test2 (proto.request.HelloRequest) returns (stream proto.reply.HelloReply) {
+//  }
+//
+//  rpc Test3 (stream proto.request.HelloRequest) returns (stream proto.reply.HelloReply) {
+//  }
+}

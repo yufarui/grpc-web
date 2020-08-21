@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package proto.option;
+
+import "google/protobuf/descriptor.proto";
+
+extend google.protobuf.FileOptions {
+  string http_address = 1001;
+}
+
+extend google.protobuf.MethodOptions {
+  string url_path = 1001;
+}
+
