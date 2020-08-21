@@ -27,4 +27,13 @@ public interface DemoController {
     @GrpcMapping(value = "/test2", method = RequestMethod.POST,
             protoEnum = ProtoEnum.REACTIVE, protoMethodName = "sayHello")
     HelloReplyMo sayHelloR(@Valid @RequestBody HelloRequestMo helloRequestMo);
+
+    @GrpcMapping(value = "/test3", method = RequestMethod.POST, protoMethodName = "sayHello")
+    HelloReplyMo sayHello1();
+
+    @GrpcMapping(value = "/test4", method = RequestMethod.POST, protoMethodName = "sayHello")
+    void sayHello2(@Valid @RequestBody HelloRequestMo helloRequestMo);
+
+    @GrpcMapping(value = "/test5", method = RequestMethod.POST, protoMethodName = "sayHello")
+    void sayHello3();
 }

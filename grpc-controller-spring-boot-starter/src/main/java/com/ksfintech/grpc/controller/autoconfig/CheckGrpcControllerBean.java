@@ -123,7 +123,7 @@ public class CheckGrpcControllerBean implements CommandLineRunner {
     private void checkReturnObject(Method method, ProtoMethod protoMethod) {
         Class<?> returnType = method.getReturnType();
 
-        if (returnType.equals(Void.class)) {
+        if (returnType.getName().equals("void")) {
             return;
         }
 

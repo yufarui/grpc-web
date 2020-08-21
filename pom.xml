@@ -13,6 +13,7 @@
         <module>grpc-controller-spring-boot-starter</module>
         <module>grpc-web-example</module>
         <module>grpc-dependency</module>
+        <module>grpc-server-spring-boot-starter</module>
     </modules>
 
 </project>

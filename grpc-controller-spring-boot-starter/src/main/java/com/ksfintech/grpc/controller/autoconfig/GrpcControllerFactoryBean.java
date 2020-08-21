@@ -83,7 +83,7 @@ public class GrpcControllerFactoryBean<T> implements FactoryBean<T> {
             String grpcService = grpcController.grpcService();
             String standardId = grpcService.substring(0, 1).toUpperCase() + grpcService.substring(1);
 
-            Object arg0 = args.length == 0 ? null : args[0];
+            Object arg0 = args == null || args.length == 0 ? null : args[0];
 
             return protoServiceContainer.getProtoServiceMap(standardId)
                     .getProtoStubMap(protoEnum)

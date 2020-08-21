@@ -1,5 +1,6 @@
 package com.ksfintech.grpc.controller.proto.method;
 
+import com.google.protobuf.Message;
 import com.google.protobuf.MessageOrBuilder;
 import com.ksfintech.grpc.controller.exception.GrpcException;
 import com.ksfintech.grpc.controller.mapper.MapperBeanPostProcessor;
@@ -52,8 +53,9 @@ public abstract class ProtoMethod {
 
         MessageOrBuilder requestMessage;
         try {
-            Method newBuilder = getArgType().getMethod("newBuilder");
-            requestMessage = (MessageOrBuilder) newBuilder.invoke("build");
+            Method newBuilderMethod = getArgType().getMethod("newBuilder");
+            Message.Builder newBuilder = (Message.Builder)newBuilderMethod.invoke(new Object());
+            requestMessage = newBuilder.build();
         } catch (Exception e) {
             throw new GrpcException("protoService[{}]方法[{}]类型[{}]解析无参失败",
                     getParent().getServiceName(), getMethodName(), this.getClass().getSimpleName(), e);
@@ -80,7 +82,7 @@ public abstract class ProtoMethod {
 
     public Object parseResponse(Class<?> grpcControllerReturnType, MessageOrBuilder returnMessage) {
 
-        if (grpcControllerReturnType.equals(Void.class)) {
+        if (grpcControllerReturnType.getName().equals("void")) {
             return null;
         }
 
