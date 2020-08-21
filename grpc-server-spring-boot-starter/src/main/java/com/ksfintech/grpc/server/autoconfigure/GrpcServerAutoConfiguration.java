@@ -2,6 +2,7 @@ package com.ksfintech.grpc.server.autoconfigure;
 
 import com.ksfintech.grpc.server.config.GrpcProtoProperties;
 import com.ksfintech.grpc.server.config.SpringContext;
+import com.ksfintech.grpc.server.controller.GrpcServiceController;
 import com.ksfintech.grpc.server.convert.HttpProtoConverter;
 import com.ksfintech.grpc.server.convert.ProtoDefConverter;
 import com.ksfintech.grpc.server.manager.DefaultGrpcServiceManager;
@@ -36,7 +37,7 @@ import java.time.Duration;
 @Configuration
 @ConditionalOnBean(annotation = ProtoFileScanner.class)
 @EnableConfigurationProperties({GRpcServerProperties.class, GrpcProtoProperties.class})
-@Import({HttpConfig.class, SpringContext.class})
+@Import({HttpConfig.class, SpringContext.class, GrpcServiceController.class})
 public class GrpcServerAutoConfiguration {
 
     @LocalRunningGrpcPort
