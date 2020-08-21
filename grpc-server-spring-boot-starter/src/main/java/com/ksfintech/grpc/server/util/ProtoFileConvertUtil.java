@@ -84,9 +84,6 @@ public class ProtoFileConvertUtil {
         } catch (Exception e) {
         }
 
-        if (StringUtils.isEmpty(httpAddress)) {
-            httpAddress = SpringContext.getProperty("grpc.proto.httpAddress");
-        }
         return httpAddress;
     }
 
