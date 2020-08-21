@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: ks-grpc-server
+
+server:
+  port: 9920
+
