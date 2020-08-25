@@ -1,0 +1,285 @@
+= grpc-controller-spring-boot-starter 项目说明
+余 发瑞 yufarui@yeah.net
+:doctype: book
+:encoding: utf-8
+:lang: zh-cn
+:toc: left
+:toc-title: 导航目录
+:toclevels: 4
+:sectnums:
+:sectanchors:
+
+:hardbreaks:
+:experimental:
+:icons: font
+
+pass:[<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">]
+
+[preface]
+== 前言
+
+gitlab项目地址link:http://10.253.117.9/ksp-microservice/grpc-web[grpc-web]
+
+项目目标:方便地使http 转换为 grpc请求
+
+
+[TIP]
+====
+使用前在钉钉@余发瑞 加入到项目中
+====
+
+== 项目说明
+
+=== 本项目引入依赖说明
+
+[NOTE]
+====
+这是starter要引入依赖的说明!
+而非使用者引入的依赖格式!
+====
+
+====
+[source,xml]
+----
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter</artifactId>
+</dependency>
+        
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency><1>
+
+<dependency>
+    <groupId>org.mapstruct</groupId
+    <artifactId>mapstruct</artifactId>
+    <version>${org.mapstruct.version}</version>
+</dependency>
+
+<dependency>
+    <groupId>org.mapstruct</groupId>
+    <artifactId>mapstruct-processor</artifactId>
+    <version>${org.mapstruct.version}</version>
+</dependency><2>
+
+<dependency>
+    <groupId>com.orientsec.grpc</groupId>
+    <artifactId>orientsec-grpc-protobuf</artifactId>
+    <version>${orientsec.grpc.version}</version>
+</dependency>
+
+<dependency>
+    <groupId>com.orientsec.grpc</groupId>
+    <artifactId>orientsec-grpc-stub</artifactId>
+    <version>${orientsec.grpc.version}</version>
+</dependency><3>
+----
+<1> 本项目是在spring-web模块的基础进行地构建
+<2> 引入实体类转换组件mapstruct
+<3> 项目与东方证券的grpc-jar包具有强耦合关系
+====
+
+=== 项目结构
+
+====
+----
+com.ksfintech.grpc.controller
+|--autoconfig <1>
+|--exception
+|--grpcmapping <2>
+|--manager <5>
+|--mapper <3>
+|--proto <4>
+|--util
+----
+<1> 自动化配置,引入2,3,4
+<2> 继承自spring-mvc的GrpcController等复合注解
+<3> 转换类的自动扫描,将转换类自动注册成spring-bean
+<4> proto相关扫描,将生成的protobuf生成的.java文件解析;并自动注册成spring-bean
+<5> 提供了默认的zookeeper相关的服务注册
+====
+
+=== 架构图
+
+image::https://oscimg.oschina.net/oscnet/up-3a295eacd273d761d04ef93c033646b61f6.png[架构图,400,400]
+
+[NOTE]
+====
+http请求通过spring-mvc进入;通过缓存快速找到解析方法,并最终以grpc的方式进行请求调用;
+====
+
+.Mapper转换类思路
+****
+使用mapStruct方便的进行protoBuf与java的类型转换!
+1.转换类的代码是在compiler阶段加入到classPath下,运行更高效
+2.可以将转换类当做spring组件加入到环境中;
+3.转换过程中,能更好地处理Builder的问题;不需要通过反射处理
+4.转换过程中,能更好地处理null-Value的问题
+5.转换过程中,能更好地处理List问题
+****
+
+.ProtoMethod桥接类的处理
+****
+初始阶段所有被@ProtoServiceScanner扫描到的protoService,其方法都会被缓存下来,使用缓存,在实际处理过程中,效率更高;
+1.ProtoMethod是抽象类,其底层有三个实现,
+ProtoBlockingMethod,ProtoFutureMethod,ProtoReactiveMethod;分别对应着实际proto中的3种stubService;
+2.实际调用invoke方法,涉及到参数解析,都会用到mapper中转换类缓存
+****
+
+.GrpcController的处理
+****
+@GrpcController是Controller的复合注解
+@GrpcMapping是RequestMapping的复合注解
+其处理请求速率 是与原本的mvc效率是一致的
+****
+
+.Check代码思路
+****
+在实际运行前会对@GrpcController标注的接口进行检查,保证使用者没有出现错误的处理
+****
+
+.Manager ProtoService的管理者
+****
+ProtoServiceManager,这是一个管理者;
+使用者可以根据实际情况创建合适ProtoChannel来注册grpc服务消费者
+****
+
+
+=== 使用案列
+
+详见 grpc-example-client项目
+
+.GrpcController的配置
+====
+[source,java]
+----
+@CrossOrigin <1>
+@GrpcController(grpcService = "myService") <2>
+public interface DemoController {
+
+    @GrpcMapping(value = "/test", method = RequestMethod.POST)<3>
+    HelloReplyMo sayHello(@Valid @RequestBody HelloRequestMo helloRequestMo);<4>
+    
+    @GrpcMapping(value = "/test1", method = RequestMethod.POST,
+        protoEnum = ProtoEnum.FUTURE, protoMethodName = "sayHello")<5>
+    HelloReplyMo sayHelloF(@Valid @RequestBody HelloRequestMo helloRequestMo);
+}
+----
+
+<1> 与原本spring-mvc一致,支持跨域配置
+<2> grpc-controller 应与 protobuf中service保持一致
+<3> 与spring-mvc中RequestMapping一致
+<4> 定义入参 和 出参,可特制化定义,符合要求的参数;
+注意方法名称应该与protoBuf保持一致
+<5> @GrpcMapping 默认使用blockingStub,也可指定成另外两种
+
+====
+
+.mapper转换类的配置
+====
+[source,java]
+----
+@Mapper(componentModel = "spring",
+        collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
+        nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)<1>
+public interface RequestMapper {
+
+    @Mapping(source = "nameBar", target = "name")
+    HelloRequest sayHello(HelloRequestMo helloRequestMo);<2>
+
+    HelloReplyMo sayHello(HelloReply helloReply);<2>
+}
+----
+
+<1> 引入mapStruct组件,高效处理转换问题
+<2> 实际转换函数,若未提供,检查机制会使代码无法运行
+====
+
+.扫描类路径下protoBuf生成的class
+====
+[source,java]
+----
+@Configuration
+@ProtoServiceScanner("com.ksfintech.proto.service")<1>
+public class BaseConfig {
+}
+----
+
+<1> 扫描protoBuf生成的rpc服务java类所在包,允许扫描多个
+====
+
+=== 容器启动时刻
+
+icon:tags[role="red"]link:https://edrawcloudpubliccn.oss-cn-shenzhen.aliyuncs.com/viewer/self/16443102/share/2020-8-24/1598256354/main.svg[容器启动时刻解释图]
+
+=== 运行时刻
+
+GrpcController 其效率与Controller是一致的;
+都是通过 DispatcherServlet 进入代理类;
+
+.核心运行方法
+====
+[source,java]
+----
+ private class GrpcMappingInvocationHandler implements InvocationHandler {
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
+            String methodName = method.getName();
+
+            if (StringUtils.equals(methodName, "equals")) {
+                return false;<1>
+            }
+
+            GrpcMapping grpcMapping = AnnotationUtils.findAnnotation(method, GrpcMapping.class);
+            if (grpcMapping == null) {
+                return null;<2>
+            }
+            ProtoEnum protoEnum = grpcMapping.protoEnum();
+
+            String protoMethodName = grpcMapping.protoMethodName();
+            if (!StringUtils.isBlank(protoMethodName)) {
+                methodName = protoMethodName;<3>
+            }
+
+            GrpcController grpcController = AnnotationUtils.getAnnotation(grpcClass, GrpcController.class);
+            String grpcService = grpcController.grpcService();
+            String standardId = grpcService.substring(0, 1).toUpperCase() + grpcService.substring(1);
+
+            Object arg0 = args == null || args.length == 0 ? null : args[0];
+
+            return protoServiceContainer.getProtoServiceMap(standardId)
+                    .getProtoStubMap(protoEnum)
+                    .getStubMethodMap(methodName)
+                    .invoke(method, arg0);<4>
+        }
+    }
+----
+<1> 排除equals方法
+<2> 若无@GrpcMapping注解不处理
+<3> 实际调用protoMethodName的判断;
+<4> 查找到缓存中ProtoMethod,并调用其invoke方法;
+注意:容器启动时刻已经做过检查,所以缓存一定会查找到的;
+====
+
+.ProtoMethod Invoke方法
+====
+[source,java]
+----
+@Override
+public Object invoke(Method grpcControllerMethod, Object grpcControllerArg) {
+
+    MessageOrBuilder requestMessage = parseReq(grpcControllerMethod, grpcControllerArg);<1>
+
+    MessageOrBuilder returnMessage = invoke(requestMessage);<2>
+
+    return parseResponse(grpcControllerMethod.getReturnType(), returnMessage);<3>
+}
+----
+<1> 通过缓存查找MapperMethod 映射转换方法,并解析请求入参
+<2> 实际调用grpc的请求方法处理请求
+<3> 类似1,解析返参
+====

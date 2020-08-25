@@ -1,0 +1,138 @@
+= grpc-server-spring-boot-starter 项目说明
+余 发瑞 yufarui@yeah.net
+:doctype: book
+:encoding: utf-8
+:lang: zh-cn
+:toc: left
+:toc-title: 导航目录
+:toclevels: 4
+:sectnums:
+:sectanchors:
+
+:hardbreaks:
+:experimental:
+:icons: font
+
+
+pass:[<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">]
+
+[preface]
+== 前言
+
+gitlab项目地址link:http://10.253.117.9/ksp-microservice/grpc-web[grpc-web]
+
+项目目标:方便地使 grpc 转换为 http 请求
+
+
+[TIP]
+====
+使用前在钉钉@余发瑞 加入到项目中
+====
+
+== 项目说明
+
+=== 项目结构
+
+====
+----
+server
+|--autoconfigure <1>
+|--config <2>
+|--controller <3>
+|--convert <4>
+|--exception
+|--manager <5>
+|--processor <6>
+|--proto <7>
+|--scan <8>
+|--servercall <9>
+|--util
+----
+<1> 自动化配置
+<2> 配置化相关,主要是提供了GrpcProtoProperties
+<3> 提供grpcController,以方便用户,上线下线注册的server(grpc)
+<4> 转换类,将用户提供的proto文件,或者对应json配置转换为ServerServiceDefinition
+<5> ServerServiceDefinition的管理者
+<6> 处理器,发现ServerServiceDefinition的处理器
+<7> proto模型,将grpc=>http的适配模型
+<8> scan,扫描classPath下对应.proto文件
+<9> ServerCalls的适配模型,实际处理转换过程的调用者
+====
+
+=== 架构图
+image::https://oscimg.oschina.net/oscnet/up-19c957103c00ac505f167d80d8a09013004.png[架构图,600,600]
+
+.scan
+****
+扫描的是classPath下的以.proto结尾的文件;
+目前还没有扩展到扫描jar包中文件
+****
+
+.servercall
+****
+目前servercall处理的rpg请求,入参和返参都非stream数据为宜;
+****
+
+.controller
+****
+controller需要添加的服务;必须原本携带着对应的proto文件;即grpc-rpg对应的入参和返参必须具备
+****
+
+=== 使用案列
+
+详见 grpc-example-server项目
+
+----
+main
+|--java
+|--proto
+|  |--option.proto
+|  |--reply.proto
+|  |--request.proto
+|  `--service.proto
+`--resources
+   |--application-grpcserver.yml
+   |--application.yml
+   `--config
+      |--dfzq-grpc-config-FULL-VERSION.properties
+      `--dfzq-grpc-config.properties
+----
+
+.核心配置类
+====
+[source,java]
+----
+@Configuration
+@ProtoFileScanner<1>
+public class Config {
+
+}
+----
+
+<1> 默认扫描classPath下.proto文件
+====
+
+.核心配置类
+====
+----
+grpc:
+  proto:
+    httpAddress: localhost:9920<1>
+    service:
+      myService:<2>
+        httpAddress: localhost:9920
+        methodMap:
+          sayHello:<3>
+            urlPath: /test
+----
+
+<1> 总默认请求地址
+<2> 需要填充的服务名称,对应service.proto中MyService
+<3> 需要填充的方法名称,对应service.proto中MyService中SayHello方法
+====
+
+
+[TIP]
+====
+如此配置完之后,项目便可自动注册MyService这个grpc服务
+====
