@@ -17,10 +17,13 @@ public class ProtoServerService {
     private Map<String, ProtoServerMethod> methodMap;
 
     public ProtoServerMethod getMethodMap(String methodName) {
-        ProtoServerMethod protoServerMethod = methodMap.get(methodName);
+
+        String upper = methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
+        ProtoServerMethod protoServerMethod = methodMap.get(upper);
+
         if (protoServerMethod == null) {
-            methodName = methodName.substring(0, 1).toLowerCase() + methodName.substring(1);
-            return methodMap.get(methodName);
+            String lower = methodName.substring(0, 1).toLowerCase() + methodName.substring(1);
+            return methodMap.get(lower);
         }
         return protoServerMethod;
     }

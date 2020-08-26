@@ -22,11 +22,13 @@ public class GrpcProtoProperties {
     private Map<String, ProtoServerService> service;
 
     public ProtoServerService getService(String serviceName) {
-        ProtoServerService protoServerService = service.get(serviceName);
+
+        String upper = serviceName.substring(0, 1).toUpperCase() + serviceName.substring(1);
+        ProtoServerService protoServerService = service.get(upper);
 
         if (protoServerService == null) {
-            serviceName = serviceName.substring(0, 1).toLowerCase() + serviceName.substring(1);
-            return service.get(serviceName);
+            String lower = serviceName.substring(0, 1).toLowerCase() + serviceName.substring(1);
+            return service.get(lower);
         }
 
         return protoServerService;
