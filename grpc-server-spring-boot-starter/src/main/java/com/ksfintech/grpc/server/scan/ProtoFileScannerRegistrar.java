@@ -96,7 +96,9 @@ public class ProtoFileScannerRegistrar implements ImportBeanDefinitionRegistrar,
         for (int i = 0; i < locations.length; i++) {
             File file = null;
             try {
-                List<URL> resources = ClassLoaderUtils.getResources(locations[i], getClass());
+
+                List<URL> resources = ClassLoaderUtils.getResources(
+                        urlSlashHandler(locations[i]), getClass());
                 for (int j = 0; j < resources.size(); j++) {
                     file = new File(resources.get(j).getPath());
                 }
@@ -116,5 +118,13 @@ public class ProtoFileScannerRegistrar implements ImportBeanDefinitionRegistrar,
         }
 
         return protoUris;
+    }
+
+    private String urlSlashHandler(String path) {
+        String location = path;
+        if (!location.startsWith("/")) {
+            location = "/" + location;
+        }
+        return location;
     }
 }

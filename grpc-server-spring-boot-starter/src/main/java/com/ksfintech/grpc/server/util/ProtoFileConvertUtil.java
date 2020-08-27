@@ -148,11 +148,14 @@ public class ProtoFileConvertUtil {
             urlPath = urlPath.substring(0, 1).toLowerCase() + urlPath.substring(1);
         }
 
-        if (!urlPath.startsWith("/")) {
-            urlPath = "/" + urlPath;
-        }
-
-        return urlPath;
+        return urlSlashHandler(urlPath);
     }
 
+    private static String urlSlashHandler(String path) {
+        String location = path;
+        if (!location.startsWith("/")) {
+            location = "/" + location;
+        }
+        return location;
+    }
 }
