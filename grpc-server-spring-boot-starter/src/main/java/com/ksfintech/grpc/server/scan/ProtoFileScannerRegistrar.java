@@ -17,7 +17,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.annotation.AnnotationAttributes;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.type.AnnotationMetadata;
 
 import java.io.File;
@@ -35,6 +38,8 @@ import java.util.jar.JarFile;
  */
 @Slf4j
 public class ProtoFileScannerRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware {
+
+    private static final ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
 
     private ResourceLoader resourceLoader;
 
@@ -94,27 +99,19 @@ public class ProtoFileScannerRegistrar implements ImportBeanDefinitionRegistrar,
 
         List<String> protoUris = new ArrayList<>();
         for (int i = 0; i < locations.length; i++) {
-            File file = null;
+
             try {
+                String path = "classpath*:" + urlSlashHandler(locations[i]) + "*.proto";
+                Resource[] resources = resourceResolver.getResources(path);
 
-                List<URL> resources = ClassLoaderUtils.getResources(
-                        urlSlashHandler(locations[i]), getClass());
-                for (int j = 0; j < resources.size(); j++) {
-                    file = new File(resources.get(j).getPath());
+                for (int j = 0; j < resources.length; j++) {
+                    protoUris.add(resources[j].getFilename());
                 }
 
-                String[] uris = file.list();
-
-                for (String uri : uris) {
-                    if (StringUtils.endsWith(uri, ".proto")) {
-                        protoUris.add(uri);
-                    }
-                }
             } catch (Exception e) {
                 log.error("查找文件位置{}出错", locations, e);
                 continue;
             }
-
         }
 
         return protoUris;
@@ -124,6 +121,9 @@ public class ProtoFileScannerRegistrar implements ImportBeanDefinitionRegistrar,
         String location = path;
         if (!location.startsWith("/")) {
             location = "/" + location;
+        }
+        if (!location.endsWith("/")) {
+            location = location + "/";
         }
         return location;
     }

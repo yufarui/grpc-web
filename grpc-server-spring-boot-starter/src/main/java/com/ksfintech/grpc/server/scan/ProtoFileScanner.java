@@ -12,10 +12,10 @@ import java.lang.annotation.*;
 public @interface ProtoFileScanner {
 
     @AliasFor("location")
-    String[] value() default {"/"};
+    String[] value() default {""};
 
     @AliasFor("value")
-    String[] location() default {"/"};
+    String[] location() default {""};
 
     String[] excluded() default {};
 
