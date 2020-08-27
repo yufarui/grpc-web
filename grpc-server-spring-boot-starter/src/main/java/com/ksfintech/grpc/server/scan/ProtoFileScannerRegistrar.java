@@ -7,6 +7,7 @@ import com.ksfintech.grpc.server.proto.ProtoContainer;
 import com.ksfintech.grpc.server.util.ProtoFileConvertUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.cxf.common.classloader.ClassLoaderUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -51,7 +52,7 @@ public class ProtoFileScannerRegistrar implements ImportBeanDefinitionRegistrar,
                 .fromMap(importingClassMetadata.getAnnotationAttributes(ProtoFileScanner.class.getName()));
         String[] location = annotationAttributes.getStringArray("location");
 
-        List<String> protoUris = searchProtoFile(location);
+        List<String> protoUris = searchProtoFileWithJar(location);
 
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(ProtoContainer.class);
 
@@ -63,7 +64,6 @@ public class ProtoFileScannerRegistrar implements ImportBeanDefinitionRegistrar,
 
         builder.addPropertyValue("protoFiles", protoFiles);
 
-        System.out.println(JSON.toJSONString(protoFiles));
         registry.registerBeanDefinition("protoContainer", builder.getBeanDefinition());
     }
 
@@ -90,4 +90,32 @@ public class ProtoFileScannerRegistrar implements ImportBeanDefinitionRegistrar,
         return protoUris;
     }
 
+    private List<String> searchProtoFileWithJar(String... locations) {
+
+        List<String> protoUris = new ArrayList<>();
+        for (int i = 0; i < locations.length; i++) {
+            File file = null;
+            try {
+                List<URL> resources = ClassLoaderUtils.getResources(locations[i], getClass());
+                for (int j = 0; j < resources.size(); j++) {
+                    file = new File(resources.get(j).getPath());
+                }
+
+                String[] uris = file.list();
+
+                for (String uri : uris) {
+                    if (StringUtils.endsWith(uri, ".proto")) {
+//                        file.getPath() + File.separator +
+                        protoUris.add(uri);
+                    }
+                }
+            } catch (Exception e) {
+                log.error("查找文件位置{}出错", locations, e);
+                continue;
+            }
+
+        }
+
+        return protoUris;
+    }
 }

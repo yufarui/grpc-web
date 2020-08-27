@@ -2,11 +2,9 @@ package com.ksfintech.grpc.server.util;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.ksfintech.grpc.server.config.GrpcProtoProperties;
-import com.ksfintech.grpc.server.config.SpringContext;
+import com.ksfintech.grpc.server.proto.ProtoFile;
 import com.ksfintech.grpc.server.proto.ProtoServerMethod;
 import com.ksfintech.grpc.server.proto.ProtoServerService;
-import com.ksfintech.grpc.server.proto.ProtoFile;
 import io.protostuff.compiler.ParserModule;
 import io.protostuff.compiler.model.*;
 import io.protostuff.compiler.parser.ClasspathFileReader;
