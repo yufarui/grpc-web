@@ -105,7 +105,6 @@ public class ProtoFileScannerRegistrar implements ImportBeanDefinitionRegistrar,
 
                 for (String uri : uris) {
                     if (StringUtils.endsWith(uri, ".proto")) {
-//                        file.getPath() + File.separator +
                         protoUris.add(uri);
                     }
                 }
