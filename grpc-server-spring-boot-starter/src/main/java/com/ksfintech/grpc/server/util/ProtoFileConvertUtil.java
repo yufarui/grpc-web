@@ -103,9 +103,9 @@ public class ProtoFileConvertUtil {
             protoServerService.setServiceName(service.getName());
 
             List<ServiceMethod> methods = service.getMethods();
-
+            Map<String, ProtoServerMethod> protoServerMethodMap = new ConcurrentHashMap<>();
             for (int j = 0; j < methods.size(); j++) {
-                Map<String, ProtoServerMethod> protoServerMethodMap = new ConcurrentHashMap<>();
+
                 ProtoServerMethod protoServerMethod = new ProtoServerMethod();
                 ServiceMethod serviceMethod = methods.get(j);
 
