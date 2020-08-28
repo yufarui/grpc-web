@@ -88,7 +88,6 @@ public class ProtoFileConvertUtil {
     private static void serviceHandler(List<Service> serviceList, ProtoFile protoFile) {
 
         List<ProtoServerService> protoServerServices = new ArrayList<>();
-        Map<String, ProtoServerMethod> protoServerMethodMap = new ConcurrentHashMap<>();
 
         if (CollectionUtils.isEmpty(serviceList)) {
             return;
@@ -106,7 +105,7 @@ public class ProtoFileConvertUtil {
             List<ServiceMethod> methods = service.getMethods();
 
             for (int j = 0; j < methods.size(); j++) {
-
+                Map<String, ProtoServerMethod> protoServerMethodMap = new ConcurrentHashMap<>();
                 ProtoServerMethod protoServerMethod = new ProtoServerMethod();
                 ServiceMethod serviceMethod = methods.get(j);
 
@@ -119,12 +118,12 @@ public class ProtoFileConvertUtil {
                 protoServerMethod.setJavaReturnType(convertJavaType(serviceMethod.getReturnType()));
 
                 protoServerMethodMap.put(serviceMethod.getName(), protoServerMethod);
-
+                protoServerService.setMethodMap(protoServerMethodMap);
             }
-            protoServerService.setMethodMap(protoServerMethodMap);
+
             protoServerServices.add(protoServerService);
-            protoFile.setServerServices(protoServerServices);
         }
+        protoFile.setServerServices(protoServerServices);
     }
 
     private static String convertJavaType(Message message) {
