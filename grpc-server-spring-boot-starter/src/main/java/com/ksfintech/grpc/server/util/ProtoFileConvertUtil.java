@@ -87,43 +87,48 @@ public class ProtoFileConvertUtil {
 
     private static void serviceHandler(List<Service> serviceList, ProtoFile protoFile) {
 
-        List<ProtoServerService> protoServerServices = new ArrayList<>();
-
         if (CollectionUtils.isEmpty(serviceList)) {
             return;
         }
 
-        for (int i = 0; i < serviceList.size(); i++) {
+        List<ProtoServerService> protoServerServices = new ArrayList<>();
 
-            Service service = serviceList.get(i);
-
-            ProtoServerService protoServerService = new ProtoServerService();
-            protoServerService.setHttpAddress(protoFile.getHttpAddress());
-            protoServerService.setProtoPackage(protoFile.getProtoPackage());
-            protoServerService.setServiceName(service.getName());
-
-            List<ServiceMethod> methods = service.getMethods();
-            Map<String, ProtoServerMethod> protoServerMethodMap = new ConcurrentHashMap<>();
-            for (int j = 0; j < methods.size(); j++) {
-
-                ProtoServerMethod protoServerMethod = new ProtoServerMethod();
-                ServiceMethod serviceMethod = methods.get(j);
-
-                String urlPath = urlPathHandler(serviceMethod);
-                protoServerMethod.setUrlPath(urlPath);
-                protoServerMethod.setMethodName(serviceMethod.getName());
-                protoServerMethod.setArgStream(serviceMethod.isArgStream());
-                protoServerMethod.setReturnStream(serviceMethod.isReturnStream());
-                protoServerMethod.setJavaArgType(convertJavaType(serviceMethod.getArgType()));
-                protoServerMethod.setJavaReturnType(convertJavaType(serviceMethod.getReturnType()));
-
-                protoServerMethodMap.put(serviceMethod.getName(), protoServerMethod);
-                protoServerService.setMethodMap(protoServerMethodMap);
-            }
-
-            protoServerServices.add(protoServerService);
+        for (Service service : serviceList) {
+            protoServerServices.add(createProtoServerService(protoFile, service));
         }
+
         protoFile.setServerServices(protoServerServices);
+    }
+
+    private static ProtoServerService createProtoServerService(ProtoFile protoFile, Service service) {
+        ProtoServerService protoServerService = new ProtoServerService();
+        protoServerService.setHttpAddress(protoFile.getHttpAddress());
+        protoServerService.setProtoPackage(protoFile.getProtoPackage());
+        protoServerService.setServiceName(service.getName());
+        protoServerService.setMethodMap(createProtoServerMethodMap(service));
+        return protoServerService;
+    }
+
+    private static Map<String, ProtoServerMethod> createProtoServerMethodMap(Service service) {
+        List<ServiceMethod> methods = service.getMethods();
+        Map<String, ProtoServerMethod> protoServerMethodMap = new ConcurrentHashMap<>();
+
+        for (int j = 0; j < methods.size(); j++) {
+
+            ProtoServerMethod protoServerMethod = new ProtoServerMethod();
+            ServiceMethod serviceMethod = methods.get(j);
+
+            String urlPath = urlPathHandler(serviceMethod);
+            protoServerMethod.setUrlPath(urlPath);
+            protoServerMethod.setMethodName(serviceMethod.getName());
+            protoServerMethod.setArgStream(serviceMethod.isArgStream());
+            protoServerMethod.setReturnStream(serviceMethod.isReturnStream());
+            protoServerMethod.setJavaArgType(convertJavaType(serviceMethod.getArgType()));
+            protoServerMethod.setJavaReturnType(convertJavaType(serviceMethod.getReturnType()));
+
+            protoServerMethodMap.put(serviceMethod.getName(), protoServerMethod);
+        }
+        return protoServerMethodMap;
     }
 
     private static String convertJavaType(Message message) {
