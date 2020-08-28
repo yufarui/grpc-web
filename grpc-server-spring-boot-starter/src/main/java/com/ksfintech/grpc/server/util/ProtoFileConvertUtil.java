@@ -60,7 +60,7 @@ public class ProtoFileConvertUtil {
 
         protoFile.setJavaPackage(javaPackageHandler(options));
         protoFile.setHttpAddress(httpAddressHandler(options));
-        protoFile.setServerServices(new ArrayList<>());
+
         return protoFile;
     }
 

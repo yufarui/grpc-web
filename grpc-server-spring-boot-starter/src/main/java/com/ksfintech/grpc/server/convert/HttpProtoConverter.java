@@ -15,6 +15,7 @@ public class HttpProtoConverter extends AbstractProtoDefConverter {
     @Autowired
     private GrpcProtoProperties grpcProtoProperties;
 
+    @Override
     public ServerServiceDefinition convert(ProtoServerService protoServerService) {
 
         changeService(grpcProtoProperties, protoServerService);
