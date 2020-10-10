@@ -28,4 +28,12 @@
         <module>grpc-server-spring-boot-starter</module>
     </modules>
 
+    <distributionManagement>
+        <repository>
+            <id>ksp.repo</id>
+            <name>ksp.repo</name>
+            <url>http://maven.kingstarfintech.com/repository/KSP</url>
+        </repository>
+    </distributionManagement>
+
 </project>
