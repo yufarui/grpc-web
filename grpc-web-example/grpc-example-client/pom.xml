@@ -8,7 +8,7 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <parent>
-        <groupId>com.ksfintech</groupId>
+        <groupId>com.kingstar.fintech</groupId>
         <artifactId>grpc-web-example</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
@@ -23,13 +23,13 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.ksfintech</groupId>
+            <groupId>com.kingstar.fintech</groupId>
             <artifactId>grpc-controller-spring-boot-starter</artifactId>
-            <version>1.0.0-RELEASE</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>com.ksfintech</groupId>
+            <groupId>com.kingstar.fintech</groupId>
             <artifactId>grpc-example-api</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>

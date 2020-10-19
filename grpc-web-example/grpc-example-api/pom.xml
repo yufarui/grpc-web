@@ -8,7 +8,7 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <parent>
-        <groupId>com.ksfintech</groupId>
+        <groupId>com.kingstar.fintech</groupId>
         <artifactId>grpc-web-example</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
