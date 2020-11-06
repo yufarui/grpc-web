@@ -3,6 +3,7 @@ package com.ksfintech.grpc.server.config;
 import com.ksfintech.grpc.server.proto.ProtoServerMethod;
 import com.ksfintech.grpc.server.proto.ProtoServerService;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,9 @@ import java.util.Map;
 @Data
 @ConfigurationProperties("grpc.proto")
 public class GrpcProtoProperties {
+
+    @Value("${:true}")
+    private boolean serviceNameSimplifyEnable;
 
     private String httpAddress;
 

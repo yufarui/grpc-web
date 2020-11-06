@@ -12,6 +12,7 @@ import io.grpc.ServiceDescriptor;
 import io.grpc.protobuf.ProtoUtils;
 import io.grpc.stub.ServerCalls;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ClassUtils;
 
 import java.lang.reflect.Method;
@@ -23,6 +24,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author: farui.yu
  */
 public abstract class AbstractProtoDefConverter implements ProtoDefConverter {
+
+    @Autowired
+    private GrpcProtoProperties grpcProtoProperties;
 
     /**
      * httpAddress 优先级
@@ -43,6 +47,10 @@ public abstract class AbstractProtoDefConverter implements ProtoDefConverter {
 
         ProtoServerService serviceProperties = grpcProtoProperties.getService(protoServerService.getServiceName());
 
+        if (serviceProperties == null) {
+            return;
+        }
+
         if (StringUtils.isNotEmpty(serviceProperties.getHttpAddress())) {
             protoServerService.setHttpAddress(serviceProperties.getHttpAddress());
         }
@@ -60,8 +68,9 @@ public abstract class AbstractProtoDefConverter implements ProtoDefConverter {
         Map<String, ProtoServerMethod> protoServerMethodMap = protoServerService.getMethodMap();
         Map<String, MethodDescriptor> methodDescriptorMap = new ConcurrentHashMap<>();
 
-        ServiceDescriptor.Builder serviceBuilder = ServiceDescriptor.newBuilder(protoServerService.getProtoPackage() + "." + protoServerService.getServiceName());
+        String serviceName = serviceNameHandler(protoServerService);
 
+        ServiceDescriptor.Builder serviceBuilder = ServiceDescriptor.newBuilder(serviceName);
 
         protoServerMethodMap.forEach((methodName, protoServerMethod) -> {
 
@@ -70,7 +79,7 @@ public abstract class AbstractProtoDefConverter implements ProtoDefConverter {
 
             MethodDescriptor<Message, Message> methodDescriptor = MethodDescriptor.<Message, Message>newBuilder()
                     .setFullMethodName(MethodDescriptor.generateFullMethodName(
-                            protoServerService.getProtoPackage() + "." + protoServerService.getServiceName(),
+                            serviceName,
                             protoServerMethod.getMethodName()))
                     .setType(chooseType(protoServerMethod))
                     .setSampledToLocalTracing(true)
@@ -90,6 +99,16 @@ public abstract class AbstractProtoDefConverter implements ProtoDefConverter {
         });
 
         return serverServiceBuilder.build();
+    }
+
+    private String serviceNameHandler(ProtoServerService protoServerService) {
+        String serviceName;
+        if (grpcProtoProperties.isServiceNameSimplifyEnable()) {
+            serviceName = protoServerService.getServiceName();
+        } else {
+            serviceName = protoServerService.getProtoPackage() + "." + protoServerService.getServiceName();
+        }
+        return serviceName;
     }
 
     protected MethodDescriptor.MethodType chooseType(ProtoServerMethod protoServerMethod) {
