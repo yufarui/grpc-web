@@ -1,6 +1,5 @@
 grpc:
   proto:
-    serviceNameSimplifyEnable: true
     httpAddress: localhost:9920
     service:
       myService:
